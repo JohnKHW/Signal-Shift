@@ -1,14 +1,25 @@
+import { SampleEnum, SignalShiftEntryMode, SignalShiftImpactLevel, SignalShiftSignalType } from "./Enums";
 
 export interface ChangePasswordRequestDto {
   NewPassword: string;
 }
 
-export interface CreateUserRequest {
-  Name: string;
-  Email: string;
+export interface EvaluateSignalShiftClassificationRequestDto {
+  ScenarioId: string;
+  SelectedSignalType: SignalShiftSignalType;
+}
+
+export interface EvaluateSignalShiftResponseRequestDto {
+  ScenarioId: string;
+  ClassifiedSignalType: SignalShiftSignalType;
+  ResponseOptionId: string;
 }
 
 export interface GetSessionRequestDto {
+}
+
+export interface GetSignalShiftSessionRequestDto {
+  Mode: SignalShiftEntryMode;
 }
 
 export interface LoginRequestDto {
@@ -37,7 +48,7 @@ export interface SendPasswordResetRequestDto {
 export interface ServiceInvocationRequestDto {
   ManagerName: string;
   MethodName: string;
-  Parameters: any[] | null;
+  Parameters: (any | null)[] | null;
   AccessToken: string | null;
   RefreshToken: string | null;
 }
@@ -52,7 +63,7 @@ export interface ServiceInvocationResponseEnvelopeDto {
 export interface ServiceStreamingRequestDto {
   ManagerName: string;
   MethodName: string;
-  Parameters: any[] | null;
+  Parameters: (any | null)[] | null;
   AccessToken: string | null;
   RefreshToken: string | null;
 }
@@ -61,6 +72,72 @@ export interface SessionDto {
   UserId: string | null;
   Email: string | null;
   Roles: string[];
+}
+
+export interface SignalShiftSessionDto {
+  Mode: SignalShiftEntryMode;
+  Title: string;
+  Subtitle: string;
+  IntroText: string;
+  EndPromptTitle: string;
+  EndPromptText: string;
+  ContinueLabel: string;
+  SignalCatalog: SignalShiftSignalOptionDto[];
+  Scenario: SignalShiftScenarioDto;
+}
+
+export interface SignalShiftSignalOptionDto {
+  SignalType: SignalShiftSignalType;
+  Label: string;
+  Description: string;
+  Shape: string;
+  AccentToken: string;
+}
+
+export interface SignalShiftScenarioDto {
+  ScenarioId: string;
+  ScenarioTitle: string;
+  SceneLabel: string;
+  CharacterName: string;
+  CharacterRole: string;
+  SceneContext: string;
+  Dialogue: string;
+  EvidenceItems: string[];
+}
+
+export interface SignalShiftClassificationResultDto {
+  ScenarioId: string;
+  SelectedSignalType: SignalShiftSignalType;
+  CorrectSignalType: SignalShiftSignalType;
+  IsCorrect: boolean;
+  RevealTitle: string;
+  RevealCoaching: string;
+  FollowUpPrompt: string;
+  ResponseOptions: SignalShiftResponseOptionDto[];
+}
+
+export interface SignalShiftResponseOptionDto {
+  ResponseOptionId: string;
+  Label: string;
+  ResponseText: string;
+}
+
+export interface SignalShiftResponseResultDto {
+  ScenarioId: string;
+  ResponseOptionId: string;
+  ResponseLabel: string;
+  ResponseText: string;
+  FeedbackTitle: string;
+  FeedbackCoaching: string;
+  RelationshipImpact: SignalShiftImpactDto;
+  StressImpact: SignalShiftImpactDto;
+  PerformanceImpact: SignalShiftImpactDto;
+}
+
+export interface SignalShiftImpactDto {
+  Label: string;
+  Level: SignalShiftImpactLevel;
+  Summary: string;
 }
 
 export interface SignUpRequestDto {
@@ -111,3 +188,4 @@ export interface UpdateUserPasswordResponseDto {
   Success: boolean;
   Message: string;
 }
+

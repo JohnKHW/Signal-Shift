@@ -27,6 +27,23 @@
   --input: oklch(0.905 0.004 85);
   --ring: oklch(0.68 0.012 85);
   --radius: 0.375rem;
+  --signal-navy: #22314d;
+  --signal-cream: #fff8ee;
+  --signal-mint-bg: #e8f5ef;
+  --signal-mint-border: #9acbb4;
+  --signal-mint-fg: #245846;
+  --signal-amber-bg: #fff3db;
+  --signal-amber-border: #e8c16d;
+  --signal-amber-fg: #725214;
+  --signal-coral-bg: #ffe6e2;
+  --signal-coral-border: #e89c93;
+  --signal-coral-fg: #7f342c;
+  --signal-sky-bg: #e8f3fb;
+  --signal-sky-border: #8bb8dd;
+  --signal-sky-fg: #20496a;
+  --signal-plum-bg: #f3ebfb;
+  --signal-plum-border: #bda0db;
+  --signal-plum-fg: #5b3f81;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -158,5 +175,16 @@
   #root {
     min-height: 100vh;
     background-color: var(--background);
+  }
+
+  .signal-shift-shell {
+    background:
+      radial-gradient(circle at top left, rgba(139, 184, 221, 0.22), transparent 32%),
+      radial-gradient(circle at top right, rgba(154, 203, 180, 0.18), transparent 28%),
+      linear-gradient(180deg, #fffdf9 0%, var(--signal-cream) 100%);
+  }
+
+  .clip-triangle {
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
   }
 }

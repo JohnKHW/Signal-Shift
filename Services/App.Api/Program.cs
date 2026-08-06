@@ -183,6 +183,7 @@ namespace App.Api
         {
             // All orchestrating manager and engine registration
             services.AddScoped<AuthManager>();
+            services.AddScoped<SignalShiftManager>();
             services.AddScoped<AuthenticatorEngine>();
             services.AddScoped<UserContextService>();
 

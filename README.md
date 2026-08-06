@@ -91,11 +91,12 @@ This expanded baseline gives generated apps a stronger structural vocabulary tha
 ## Implementation Index
 
 ### Frontend Views
-- `react-app/src/views/ExampleView.tsx` — placeholder welcome page that provides a calm, domain-neutral first screen.
+- `react-app/src/views/ExampleView.tsx` — Signal Shift root route that hosts the calm home screen and the reusable sudden-plan-change gameplay slice.
 - `react-app/src/views/NotFoundView.tsx` — 404 fallback view.
 - `react-app/src/views/UnauthorizedView.tsx` — fallback for authenticated users who do not have permission for a protected route.
 
 ### Frontend Components
+- `react-app/src/components/signal-shift/SignalShiftView.tsx` — app-owned gameplay surface for home, classify, reveal, respond, feedback, and concise summary states across learning and demo entry paths.
 - `react-app/src/components/ErrorBoundary.tsx` — global error boundary.
 - `react-app/src/components/ui/button.tsx` — ShadCN button primitive for primary and secondary actions.
 - `react-app/src/components/ui/badge.tsx` — ShadCN badge primitive for compact status or labeling.
@@ -124,9 +125,11 @@ This expanded baseline gives generated apps a stronger structural vocabulary tha
 ### Managers
 - `Services/App.Api/Managers/AuthManager.cs` — auth endpoints.
   - Methods: `Login`, `SignUp`, `SendPasswordResetEmail`, `GetSession`, `ChangePassword`, `UpdateUserEmail`, `UpdateUserPassword`, `UpdateUserName`.
+- `Services/App.Api/Managers/SignalShiftManager.cs` — Signal Shift session-content and evaluation manager.
+  - Methods: `GetSession`, `EvaluateClassification`, `EvaluateResponse`.
 
 ### Engines
-- `Services/App.Api/Engines/SampleEngine.cs` — Placeholder example stateless engine; replace with real engines.
+- `Services/App.Api/Engines/SampleEngine.cs` — placeholder example stateless engine; not used by the Signal Shift gameplay slice.
 
 ### Accessors
 - `Services/App.Api/Accessors/DatabaseAccessor.cs` — Marten document DB operations.
@@ -140,6 +143,13 @@ This expanded baseline gives generated apps a stronger structural vocabulary tha
 
 ## Key Flows
 - (Document major end-to-end flows at a high level)
+
+### Signal Shift demo + learning vertical slice
+1. The root route shows a calm home screen with only **開始學習** and **直接試玩 Demo**.
+2. The frontend calls `SignalShiftManager.GetSession(...)` to load the fixed signal catalog plus the sudden plan change scenario without revealing the answer.
+3. The player classifies first from the five fixed signal types. The frontend then calls `SignalShiftManager.EvaluateClassification(...)` to reveal the best-fit signal and authored coaching.
+4. The player chooses one of three authored response options. The frontend calls `SignalShiftManager.EvaluateResponse(...)` to receive qualitative Relationship / Stress / Performance feedback plus concise coaching.
+5. The shared gameplay view ends in a concise summary that differs slightly for demo and learning entry modes while reusing the same underlying scenario loop.
 
 ### Backend→Frontend HTTP Streaming (NDJSON)
 This StarterKit supports a ServiceInvoker streaming RPC pattern (newline-delimited JSON over `fetch()`):
