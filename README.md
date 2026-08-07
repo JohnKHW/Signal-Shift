@@ -7,6 +7,8 @@
 
 Complete documentation package for the **Signal Shift** game, created for the Agent Creativity Hackathon (CodeBuddy track) in partnership with Hong Kong Children & Youth Services.
 
+The playable CodeBuddy MVP now lives at the repository root. Open `index.html` directly, or run `npm run dev` and visit `http://localhost:4173`.
+
 The pack contains:
 
 - **PRD (Why only)** — Problem, objectives, users, rationale
