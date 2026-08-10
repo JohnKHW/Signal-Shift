@@ -35,6 +35,16 @@ export default defineConfig(async () => {
     },
   })
 
+  // Remove crossorigin attributes from built HTML so assets load correctly
+  // behind reverse proxies (e.g. Cloud Studio, nginx sub-path deployments).
+  const removeCrossorigin = () => ({
+    name: 'remove-crossorigin',
+    transformIndexHtml(html: string) {
+      return html
+        .replace(/\s+crossorigin(?:="[^"]*")?/g, '')
+    },
+  })
+
   // Dynamic site.webmanifest from env (dev + build)
   const dynamicManifest = () => ({
     name: 'dynamic-manifest',
@@ -97,6 +107,7 @@ export default defineConfig(async () => {
       tsConfigPaths(),
       restartOnDepsChange(),
       dynamicManifest(),
+      removeCrossorigin(),
       checker({ typescript: true }),
     ],
     resolve: {
