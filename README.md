@@ -144,12 +144,14 @@ This expanded baseline gives generated apps a stronger structural vocabulary tha
 ## Key Flows
 - (Document major end-to-end flows at a high level)
 
-### Signal Shift demo + learning vertical slice
-1. The root route shows a calm home screen with only **開始學習** and **直接試玩 Demo**.
-2. The frontend calls `SignalShiftManager.GetSession(...)` to load the fixed signal catalog plus the sudden plan change scenario without revealing the answer.
-3. The player classifies first from the five fixed signal types. The frontend then calls `SignalShiftManager.EvaluateClassification(...)` to reveal the best-fit signal and authored coaching.
-4. The player chooses one of three authored response options. The frontend calls `SignalShiftManager.EvaluateResponse(...)` to receive qualitative Relationship / Stress / Performance feedback plus concise coaching.
-5. The shared gameplay view ends in a concise summary that differs slightly for demo and learning entry modes while reusing the same underlying scenario loop.
+### Signal Shift adventure-mode flow
+1. The root route presents a 2.5D adventure map with animated path travel, an open first level, and future nodes that unlock after successful completion. **開始學習** enters the gated learning route; **直接試玩 Demo** skips the tutorial.
+2. The frontend calls `SignalShiftManager.GetSession(...)` with a `LevelId` to load the signal catalog, the selected authored scenario, and (for learning) tutorial steps without revealing the correct signal in the session payload.
+3. Learning must complete the tutorial gate before classification controls are enabled. Demo starts directly at classification.
+4. The player classifies first from the five fixed signal types. `SignalShiftManager.EvaluateClassification(...)` derives the correct signal from authored backend scenario data and returns the authored coaching.
+5. The player chooses one of three authored response options. `EvaluateResponse(...)` does not trust the legacy client-supplied correct-signal field; response feedback is selected from backend-authored options.
+6. `SignalShiftManager.GetSummary(...)` derives classification correctness and transfer success from the authored scenario. Transfer success requires both the authored correct signal and the authored success response option.
+7. A successful Learning summary marks the current level complete and starts the next authored level immediately. Summary replay resets the complete transient session scope and increments a run key, so Demo and learning can restart even when a scenario id is reused.
 
 ### Backend→Frontend HTTP Streaming (NDJSON)
 This StarterKit supports a ServiceInvoker streaming RPC pattern (newline-delimited JSON over `fetch()`):

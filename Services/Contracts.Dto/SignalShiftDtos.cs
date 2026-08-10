@@ -6,6 +6,12 @@ namespace Contracts.Dto
     {
         public SignalShiftEntryMode Mode { get; set; }
 
+        public string LevelId { get; set; } = string.Empty;
+
+        public int LevelNumber { get; set; }
+
+        public bool RequiresTutorial { get; set; }
+
         public string Title { get; set; } = string.Empty;
 
         public string Subtitle { get; set; } = string.Empty;
@@ -18,9 +24,20 @@ namespace Contracts.Dto
 
         public string ContinueLabel { get; set; } = string.Empty;
 
+        public List<SignalShiftTutorialStepDto> TutorialSteps { get; set; } = new();
+
         public List<SignalShiftSignalOptionDto> SignalCatalog { get; set; } = new();
 
         public SignalShiftScenarioDto Scenario { get; set; } = new();
+    }
+
+    public class SignalShiftTutorialStepDto
+    {
+        public int StepNumber { get; set; }
+
+        public string Title { get; set; } = string.Empty;
+
+        public string Body { get; set; } = string.Empty;
     }
 
     public class SignalShiftSignalOptionDto
@@ -111,5 +128,41 @@ namespace Contracts.Dto
         public SignalShiftImpactLevel Level { get; set; }
 
         public string Summary { get; set; } = string.Empty;
+    }
+
+    public class GetSignalShiftSummaryRequestDto
+    {
+        public string ScenarioId { get; set; } = string.Empty;
+
+        public SignalShiftSignalType SelectedSignalType { get; set; }
+
+        public string ResponseOptionId { get; set; } = string.Empty;
+    }
+
+    public class SignalShiftSummaryDto
+    {
+        public string ScenarioId { get; set; } = string.Empty;
+
+        public SignalShiftSignalType SelectedSignalType { get; set; }
+
+        public SignalShiftSignalType CorrectSignalType { get; set; }
+
+        public bool IsClassificationCorrect { get; set; }
+
+        public string SelectedSignalLabel { get; set; } = string.Empty;
+
+        public string CorrectSignalLabel { get; set; } = string.Empty;
+
+        public string ResponseOptionId { get; set; } = string.Empty;
+
+        public string ResponseLabel { get; set; } = string.Empty;
+
+        public bool IsTransferSuccessful { get; set; }
+
+        public string TransferTitle { get; set; } = string.Empty;
+
+        public string TransferCoaching { get; set; } = string.Empty;
+
+        public string TransferRule { get; set; } = string.Empty;
     }
 }

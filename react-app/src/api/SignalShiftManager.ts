@@ -1,4 +1,4 @@
-import { GetSignalShiftSessionRequestDto, SignalShiftSessionDto, EvaluateSignalShiftClassificationRequestDto, SignalShiftClassificationResultDto, EvaluateSignalShiftResponseRequestDto, SignalShiftResponseResultDto } from "./AppDtos";
+import { GetSignalShiftSessionRequestDto, SignalShiftSessionDto, EvaluateSignalShiftClassificationRequestDto, SignalShiftClassificationResultDto, EvaluateSignalShiftResponseRequestDto, SignalShiftResponseResultDto, GetSignalShiftSummaryRequestDto, SignalShiftSummaryDto } from "./AppDtos";
 import ApiClient, { ApiClientRequestOptions } from "./ApiClient";
 
 const GetSession = (request: GetSignalShiftSessionRequestDto, options?: ApiClientRequestOptions): Promise<SignalShiftSessionDto> =>
@@ -10,8 +10,12 @@ const EvaluateClassification = (request: EvaluateSignalShiftClassificationReques
 const EvaluateResponse = (request: EvaluateSignalShiftResponseRequestDto, options?: ApiClientRequestOptions): Promise<SignalShiftResponseResultDto> =>
   ApiClient.invokeMethod<SignalShiftResponseResultDto>("Api", "SignalShiftManager", "EvaluateResponse", request, options);
 
+const GetSummary = (request: GetSignalShiftSummaryRequestDto, options?: ApiClientRequestOptions): Promise<SignalShiftSummaryDto> =>
+  ApiClient.invokeMethod<SignalShiftSummaryDto>("Api", "SignalShiftManager", "GetSummary", request, options);
+
 export default {
   GetSession,
   EvaluateClassification,
-  EvaluateResponse
+  EvaluateResponse,
+  GetSummary
 };

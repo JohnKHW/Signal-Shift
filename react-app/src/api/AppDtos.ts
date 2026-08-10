@@ -11,7 +11,6 @@ export interface EvaluateSignalShiftClassificationRequestDto {
 
 export interface EvaluateSignalShiftResponseRequestDto {
   ScenarioId: string;
-  ClassifiedSignalType: SignalShiftSignalType;
   ResponseOptionId: string;
 }
 
@@ -20,6 +19,7 @@ export interface GetSessionRequestDto {
 
 export interface GetSignalShiftSessionRequestDto {
   Mode: SignalShiftEntryMode;
+  LevelId?: string;
 }
 
 export interface LoginRequestDto {
@@ -76,14 +76,24 @@ export interface SessionDto {
 
 export interface SignalShiftSessionDto {
   Mode: SignalShiftEntryMode;
+  LevelId: string;
+  LevelNumber: number;
+  RequiresTutorial: boolean;
   Title: string;
   Subtitle: string;
   IntroText: string;
   EndPromptTitle: string;
   EndPromptText: string;
   ContinueLabel: string;
+  TutorialSteps: SignalShiftTutorialStepDto[];
   SignalCatalog: SignalShiftSignalOptionDto[];
   Scenario: SignalShiftScenarioDto;
+}
+
+export interface SignalShiftTutorialStepDto {
+  StepNumber: number;
+  Title: string;
+  Body: string;
 }
 
 export interface SignalShiftSignalOptionDto {
@@ -140,6 +150,27 @@ export interface SignalShiftImpactDto {
   Summary: string;
 }
 
+export interface GetSignalShiftSummaryRequestDto {
+  ScenarioId: string;
+  SelectedSignalType: SignalShiftSignalType;
+  ResponseOptionId: string;
+}
+
+export interface SignalShiftSummaryDto {
+  ScenarioId: string;
+  SelectedSignalType: SignalShiftSignalType;
+  CorrectSignalType: SignalShiftSignalType;
+  IsClassificationCorrect: boolean;
+  SelectedSignalLabel: string;
+  CorrectSignalLabel: string;
+  ResponseOptionId: string;
+  ResponseLabel: string;
+  IsTransferSuccessful: boolean;
+  TransferTitle: string;
+  TransferCoaching: string;
+  TransferRule: string;
+}
+
 export interface SignUpRequestDto {
   Email: string;
   Password: string;
@@ -188,4 +219,3 @@ export interface UpdateUserPasswordResponseDto {
   Success: boolean;
   Message: string;
 }
-
