@@ -1,0 +1,131 @@
+{
+  "brand": "Signal Shift",
+  "topbar": {
+    "title": "Workplace Signal Adventure",
+    "progressLabel": "Learning Progress",
+    "methods": "1 Method",
+    "levelsCompleted": "{{count}} Level Completed",
+    "levelsCompleted_other": "{{count}} Levels Completed"
+  },
+  "home": {
+    "season": "Your Learning World · Season 1",
+    "headline": "Follow the signal trail,",
+    "headlineSub": "choose your next stop freely.",
+    "copy": "Each level is a short workplace scenario. Start from an open route and unlock further destinations after completing it.",
+    "startLearning": "Start Learning",
+    "tryDemo": "Try Demo",
+    "worldMap": "Your World Map",
+    "exploreSection": "Explore Routes",
+    "exploreTitle": "Start from the first signal",
+    "exploreDesc": "Every node practises the same core method: Classify → Confirm → Respond.",
+    "mapCaption": "Complete the previous level to unlock the next",
+    "tip": "Tip:",
+    "tipBody": "You don't need to finish the whole map at once — one small step today already counts as progress."
+  },
+  "levels": {
+    "signal-detour": {
+      "title": "Detour Trail",
+      "subtitle": "Plans change suddenly",
+      "description": "Learn to check the evidence before confirming a new direction."
+    },
+    "clear-the-air": {
+      "title": "Clarity Dock",
+      "subtitle": "Clarify the meaning",
+      "description": "Use one good question to create space in the conversation."
+    },
+    "steady-ground": {
+      "title": "Steady Ground",
+      "subtitle": "Hold boundaries while collaborating",
+      "description": "Apply the method to more complex workplace situations."
+    }
+  },
+  "game": {
+    "returnHome": "Return Home",
+    "levelLabel": "Level {{number}} · {{title}}",
+    "cluesTitle": "Clues You Can See",
+    "conversationBeats": {
+      "youSpeaker": "You",
+      "youRole": "See the context first",
+      "clueSpeaker": "Scene Hint",
+      "clueRole": "Notice the next step"
+    },
+    "flow": {
+      "kicker": "CURRENT FLOW",
+      "subtitle": "The conversation is layering toward your decision",
+      "step1": "01 See",
+      "step2": "02 Hear",
+      "step3": "03 Notice",
+      "ariaLabel": "Scenario conversation flow",
+      "statusWaiting": "Waiting for you to choose a signal to move this flow forward"
+    }
+  },
+  "tutorial": {
+    "eyebrow": "Tutorial",
+    "subtitle": "Learn three steps before you start",
+    "stepLabel": "Step {{number}}",
+    "hint": "Classification buttons unlock after the tutorial. Take your time reading the clues.",
+    "nextStep": "Next Step",
+    "startLevel": "Start Level"
+  },
+  "classify": {
+    "title": "Choose a Signal Category",
+    "subtitle": "The answer is hidden. Based on the current evidence, choose the category that best represents what to do next.",
+    "bestAnswer": "Best Answer",
+    "bestClassLabel": "The best classification this time is \"{{label}}\"",
+    "continueToRespond": "Continue to Responses"
+  },
+  "respond": {
+    "title": "Choose a Response",
+    "subtitle": "The best classification is now shown. Choose a response you would actually say."
+  },
+  "feedback": {
+    "youChose": "You chose:",
+    "viewSummary": "View Summary"
+  },
+  "summary": {
+    "eyebrow": "Complete",
+    "classificationCorrect": "Signal Analysis",
+    "classificationWrong": "Review the Evidence Again",
+    "yourClassification": "Your Classification",
+    "bestClassification": "Best Classification",
+    "yourResponse": "Your Response",
+    "transferRule": "Transfer Success Rule",
+    "playAgain": "Play Again",
+    "nextLevel": "Next Level"
+  },
+  "loading": "Loading…",
+  "errors": {
+    "loadSession": "Failed to load the scenario. Please try again.",
+    "evaluate": "Failed to evaluate classification. Please try again.",
+    "loadResponse": "Failed to load response result. Please try again.",
+    "loadSummary": "Failed to load summary. Please try again."
+  },
+  "aria": {
+    "startLevel": "Start Level {{number}}: {{title}}",
+    "lockedLevel": "{{title}} is locked"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Page not found",
+    "body": "The page you requested does not exist or is no longer available.",
+    "returnHome": "Return home"
+  },
+  "unauthorized": {
+    "title": "Unauthorized",
+    "body": "You do not have permission to access this page.",
+    "goHome": "Go home"
+  },
+  "auth": {
+    "sessionTimeout": "Session restore timed out. Check your connection and try again.",
+    "sessionFailed": "Unable to restore your session.",
+    "retry": "Retry",
+    "signOut": "Sign out",
+    "loading": "Loading..."
+  },
+  "errorBoundary": {
+    "title": "{{name}} - Something went wrong"
+  },
+  "langSwitcher": {
+    "label": "Language"
+  }
+}

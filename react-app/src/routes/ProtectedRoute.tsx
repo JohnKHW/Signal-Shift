@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import AuthManager from '@/api/AuthManager';
 import useAuthStore from '@/auth/AuthStore';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ roles }: ProtectedRouteProps) => {
+  const { t } = useTranslation();
   const session = useAuthStore((state) => state.session);
   const accessToken = useAuthStore((state) => state.accessToken);
   const refreshToken = useAuthStore((state) => state.refreshToken);
@@ -30,7 +32,10 @@ const ProtectedRoute = ({ roles }: ProtectedRouteProps) => {
       setError(null);
       try {
         const timeout = new Promise<never>((_, reject) => {
-          timeoutId = window.setTimeout(() => reject(new Error('Session restore timed out. Check your connection and try again.')), SESSION_RESTORE_TIMEOUT_MS);
+          timeoutId = window.setTimeout(
+            () => reject(new Error(t('auth.sessionTimeout'))),
+            SESSION_RESTORE_TIMEOUT_MS,
+          );
         });
 
         await Promise.race([
@@ -39,7 +44,7 @@ const ProtectedRoute = ({ roles }: ProtectedRouteProps) => {
         ]);
       } catch (e: any) {
         if (!cancelled) {
-          setError(e?.message ?? 'Unable to restore your session.');
+          setError(e?.message ?? t('auth.sessionFailed'));
         }
       } finally {
         window.clearTimeout(timeoutId);
@@ -71,10 +76,10 @@ const ProtectedRoute = ({ roles }: ProtectedRouteProps) => {
             </div>
             <div className="flex flex-wrap gap-2">
               <Button onClick={() => setRetryKey((value) => value + 1)}>
-                Retry
+                {t('auth.retry')}
               </Button>
               <Button variant="outline" onClick={signOut}>
-                Sign out
+                {t('auth.signOut')}
               </Button>
             </div>
           </section>
@@ -89,7 +94,7 @@ const ProtectedRoute = ({ roles }: ProtectedRouteProps) => {
             aria-hidden="true"
             className="size-8 animate-spin rounded-full border-2 border-muted border-t-primary"
           />
-          <p>Loading...</p>
+          <p>{t('auth.loading')}</p>
         </div>
       </main>
     );

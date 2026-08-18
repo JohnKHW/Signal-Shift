@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft, BookOpenCheck, CheckCircle2, ChevronRight, Compass, LockKeyhole, Map as MapIcon, RotateCcw, Sparkles, Trophy } from 'lucide-react';
 import SignalShiftManager from '@/api/SignalShiftManager';
 import type {
@@ -14,6 +15,7 @@ import type {
 import { SignalShiftEntryMode, SignalShiftImpactLevel, SignalShiftSignalType } from '@/api/Enums';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import LangSwitcher from '@/components/LangSwitcher';
 import { cn } from '@/lib/utils';
 
 type SignalShiftPhase = 'home' | 'tutorial' | 'classify' | 'reveal' | 'respond' | 'feedback' | 'summary';
@@ -21,71 +23,44 @@ type SignalShiftPhase = 'home' | 'tutorial' | 'classify' | 'reveal' | 'respond' 
 type AdventureLevel = {
   id: string;
   number: string;
-  title: string;
-  subtitle: string;
-  description: string;
   unlocked: boolean;
   accent: 'sky' | 'mint' | 'amber';
 };
 
 const adventureLevels: AdventureLevel[] = [
-  {
-    id: 'signal-detour',
-    number: '01',
-    title: '改道小徑',
-    subtitle: '計劃突然改變',
-    description: '學識先看證據，再確認新方向。',
-    unlocked: true,
-    accent: 'sky',
-  },
-  {
-    id: 'clear-the-air',
-    number: '02',
-    title: '澄清碼頭',
-    subtitle: '把意思問清楚',
-    description: '用一個好問題，為對話留出空間。',
-    unlocked: false,
-    accent: 'mint',
-  },
-  {
-    id: 'steady-ground',
-    number: '03',
-    title: '穩陣高地',
-    subtitle: '保持界線與合作',
-    description: '把方法帶到更複雜的工作場景。',
-    unlocked: false,
-    accent: 'amber',
-  },
+  { id: 'signal-detour', number: '01', unlocked: true,  accent: 'sky'   },
+  { id: 'clear-the-air', number: '02', unlocked: false, accent: 'mint'  },
+  { id: 'steady-ground', number: '03', unlocked: false, accent: 'amber' },
 ];
 
 const signalAssetPaths: Record<SignalShiftSignalType, string> = {
-  [SignalShiftSignalType.GreenLight]: '/img/signal-shift/signal-green-light.svg',
+  [SignalShiftSignalType.GreenLight]:  '/img/signal-shift/signal-green-light.svg',
   [SignalShiftSignalType.YellowLight]: '/img/signal-shift/signal-yellow-light.svg',
-  [SignalShiftSignalType.RedLight]: '/img/signal-shift/signal-red-light.svg',
-  [SignalShiftSignalType.DetourSign]: '/img/signal-shift/signal-detour-sign.svg',
-  [SignalShiftSignalType.JokeSign]: '/img/signal-shift/signal-joke-sign.svg',
+  [SignalShiftSignalType.RedLight]:    '/img/signal-shift/signal-red-light.svg',
+  [SignalShiftSignalType.DetourSign]:  '/img/signal-shift/signal-detour-sign.svg',
+  [SignalShiftSignalType.JokeSign]:    '/img/signal-shift/signal-joke-sign.svg',
 };
 
-const homeBackgroundPath = '/img/signal-shift/home-background.svg';
+const homeBackgroundPath    = '/img/signal-shift/home-background.svg';
 const scenarioBackgroundPath = '/img/signal-shift/meeting-room-scene.svg';
-const playerAvatarPath = '/img/signal-shift/avatar-player.svg';
-const colleagueAvatarPath = '/img/signal-shift/avatar-colleague.svg';
-const bossAvatarPath = '/img/signal-shift/avatar-boss.svg';
+const playerAvatarPath      = '/img/signal-shift/avatar-player.svg';
+const colleagueAvatarPath   = '/img/signal-shift/avatar-colleague.svg';
+const bossAvatarPath        = '/img/signal-shift/avatar-boss.svg';
 
 const accentClassNames: Record<string, string> = {
-  mint: 'border-[color:var(--signal-mint-border)] bg-[color:var(--signal-mint-bg)] text-[color:var(--signal-mint-fg)]',
+  mint:  'border-[color:var(--signal-mint-border)] bg-[color:var(--signal-mint-bg)] text-[color:var(--signal-mint-fg)]',
   amber: 'border-[color:var(--signal-amber-border)] bg-[color:var(--signal-amber-bg)] text-[color:var(--signal-amber-fg)]',
   coral: 'border-[color:var(--signal-coral-border)] bg-[color:var(--signal-coral-bg)] text-[color:var(--signal-coral-fg)]',
-  sky: 'border-[color:var(--signal-sky-border)] bg-[color:var(--signal-sky-bg)] text-[color:var(--signal-sky-fg)]',
-  plum: 'border-[color:var(--signal-plum-border)] bg-[color:var(--signal-plum-bg)] text-[color:var(--signal-plum-fg)]',
+  sky:   'border-[color:var(--signal-sky-border)] bg-[color:var(--signal-sky-bg)] text-[color:var(--signal-sky-fg)]',
+  plum:  'border-[color:var(--signal-plum-border)] bg-[color:var(--signal-plum-bg)] text-[color:var(--signal-plum-fg)]',
 };
 
 const impactToneClassNames: Record<SignalShiftImpactLevel, string> = {
-  [SignalShiftImpactLevel.None]: 'border-border bg-card text-foreground',
-  [SignalShiftImpactLevel.SmallRise]: 'border-[color:var(--signal-mint-border)] bg-[color:var(--signal-mint-bg)] text-[color:var(--signal-mint-fg)]',
-  [SignalShiftImpactLevel.ClearRise]: 'border-[color:var(--signal-sky-border)] bg-[color:var(--signal-sky-bg)] text-[color:var(--signal-sky-fg)]',
-  [SignalShiftImpactLevel.SmallDrop]: 'border-[color:var(--signal-amber-border)] bg-[color:var(--signal-amber-bg)] text-[color:var(--signal-amber-fg)]',
-  [SignalShiftImpactLevel.ClearDrop]: 'border-[color:var(--signal-coral-border)] bg-[color:var(--signal-coral-bg)] text-[color:var(--signal-coral-fg)]',
+  [SignalShiftImpactLevel.None]:       'border-border bg-card text-foreground',
+  [SignalShiftImpactLevel.SmallRise]:  'border-[color:var(--signal-mint-border)] bg-[color:var(--signal-mint-bg)] text-[color:var(--signal-mint-fg)]',
+  [SignalShiftImpactLevel.ClearRise]:  'border-[color:var(--signal-sky-border)] bg-[color:var(--signal-sky-bg)] text-[color:var(--signal-sky-fg)]',
+  [SignalShiftImpactLevel.SmallDrop]:  'border-[color:var(--signal-amber-border)] bg-[color:var(--signal-amber-bg)] text-[color:var(--signal-amber-fg)]',
+  [SignalShiftImpactLevel.ClearDrop]:  'border-[color:var(--signal-coral-border)] bg-[color:var(--signal-coral-bg)] text-[color:var(--signal-coral-fg)]',
 };
 
 interface SignalShiftViewProps {
@@ -93,6 +68,7 @@ interface SignalShiftViewProps {
 }
 
 const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
+  const { t } = useTranslation();
   const [phase, setPhase] = useState<SignalShiftPhase>('home');
   const [mode, setMode] = useState<SignalShiftEntryMode | null>(null);
   const [activeLevelId, setActiveLevelId] = useState('signal-detour');
@@ -139,7 +115,7 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
         setPhase(loadedSession.RequiresTutorial && loadedSession.TutorialSteps.length > 0 ? 'tutorial' : 'classify');
       } catch (loadError: any) {
         if (!cancelled) {
-          setError(loadError?.message ?? '未能載入情境，請再試一次。');
+          setError(loadError?.message ?? t('errors.loadSession'));
           setPhase('home');
         }
       } finally {
@@ -205,7 +181,7 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
       setClassification(result);
       setPhase('reveal');
     } catch (classificationError: any) {
-      setError(classificationError?.message ?? '未能評估分類，請再試一次。');
+      setError(classificationError?.message ?? t('errors.evaluate'));
     } finally {
       setLoading(false);
     }
@@ -229,7 +205,7 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
       setResponseResult(result);
       setPhase('feedback');
     } catch (responseError: any) {
-      setError(responseError?.message ?? '未能載入回應結果，請再試一次。');
+      setError(responseError?.message ?? t('errors.loadResponse'));
     } finally {
       setLoading(false);
     }
@@ -268,7 +244,7 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
       setSummary(result);
       setPhase('summary');
     } catch (summaryError: any) {
-      setError(summaryError?.message ?? '未能載入總結，請再試一次。');
+      setError(summaryError?.message ?? t('errors.loadSummary'));
     } finally {
       setLoading(false);
     }
@@ -308,43 +284,48 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
             <div className="flex items-center gap-3">
               <div className="adventure-mark"><Compass className="size-5" /></div>
               <div>
-                <p className="adventure-eyebrow">Signal Shift</p>
-                <p className="adventure-topbar-title">職場訊號探險</p>
+                <p className="adventure-eyebrow">{t('brand')}</p>
+                <p className="adventure-topbar-title">{t('topbar.title')}</p>
               </div>
             </div>
-            <div className="adventure-stats" aria-label="學習進度">
-              <span><Sparkles className="size-4" /> 1 個方法</span>
-              <span><Trophy className="size-4" /> {completedLevelIds.length} 關完成</span>
+            <div className="flex items-center gap-3">
+              <div className="adventure-stats" aria-label={t('topbar.progressLabel')}>
+                <span><Sparkles className="size-4" /> {t('topbar.methods')}</span>
+                <span><Trophy className="size-4" /> {t('topbar.levelsCompleted', { count: completedLevelIds.length })}</span>
+              </div>
+              <LangSwitcher className="flex items-center gap-1" />
             </div>
           </div>
 
           <div className="adventure-hero mt-8">
             <div className="max-w-xl">
-              <p className="adventure-eyebrow">你的學習世界 · 第 1 季</p>
-              <h1 className="adventure-title mt-3">沿住訊號小徑，<span>自由選擇下一站。</span></h1>
-              <p className="adventure-copy mt-5">每一關都是一個短短的職場場景。你可以從已開放的路線開始，完成後再解鎖更遠的地方。</p>
+              <p className="adventure-eyebrow">{t('home.season')}</p>
+              <h1 className="adventure-title mt-3">{t('home.headline')}<span>{t('home.headlineSub')}</span></h1>
+              <p className="adventure-copy mt-5">{t('home.copy')}</p>
               <div className="mt-6 flex flex-wrap gap-3">
-                  <Button size="lg" className="adventure-primary-button" onClick={() => startLevel('signal-detour')}>
-                  <BookOpenCheck className="size-5" /> 開始學習
+                <Button size="lg" className="adventure-primary-button" onClick={() => startLevel('signal-detour')}>
+                  <BookOpenCheck className="size-5" /> {t('home.startLearning')}
                 </Button>
                 <Button size="lg" variant="outline" className="adventure-secondary-button" onClick={() => startMode(SignalShiftEntryMode.Demo, 'signal-detour')}>
-                  直接試玩 Demo <ChevronRight className="size-4" />
+                  {t('home.tryDemo')} <ChevronRight className="size-4" />
                 </Button>
               </div>
             </div>
             <div className="adventure-hero-art" aria-hidden="true">
               <div className="adventure-art-glow" />
               <img src={homeBackgroundPath} alt="" />
-              <div className="adventure-art-badge"><MapIcon className="size-4" /> 你的世界地圖</div>
+              <div className="adventure-art-badge"><MapIcon className="size-4" /> {t('home.worldMap')}</div>
             </div>
           </div>
 
           <div className="mt-8 flex items-end justify-between gap-4">
             <div>
-              <p className="adventure-eyebrow">探索路線</p>
-              <h2 className="adventure-section-title mt-2">由第一個訊號開始</h2>
+              <p className="adventure-eyebrow">{t('home.exploreSection')}</p>
+              <h2 className="adventure-section-title mt-2">{t('home.exploreTitle')}</h2>
             </div>
-            <p className="hidden max-w-xs text-right text-sm leading-6 text-[color:var(--signal-ink-soft)] sm:block">每一個節點都會練習同一套核心方法：分類 → 確認 → 回應。</p>
+            <p className="hidden max-w-xs text-right text-sm leading-6 text-[color:var(--signal-ink-soft)] sm:block">
+              {t('home.exploreDesc')}
+            </p>
           </div>
 
           <div className="adventure-map mt-5">
@@ -355,15 +336,21 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
             <div className="adventure-map-nodes">
               {adventureLevels.map((level, index) => {
                 const isUnlocked = index === 0 || completedLevelIds.includes(adventureLevels[index - 1].id);
-                return <AdventureLevelNode key={level.id} level={{ ...level, unlocked: isUnlocked }} onSelect={() => startLevel(level.id)} />;
+                return (
+                  <AdventureLevelNode
+                    key={level.id}
+                    level={{ ...level, unlocked: isUnlocked }}
+                    onSelect={() => startLevel(level.id)}
+                  />
+                );
               })}
             </div>
-            <div className="adventure-map-caption"><span className="adventure-caption-dot" /> 完成上一關，下一關就會亮起</div>
+            <div className="adventure-map-caption"><span className="adventure-caption-dot" /> {t('home.mapCaption')}</div>
           </div>
 
           <div className="mt-6 flex items-center gap-3 rounded-2xl border border-[color:var(--signal-map-border)] bg-white/60 px-4 py-3 text-sm text-[color:var(--signal-ink-soft)] shadow-sm">
             <img src={playerAvatarPath} alt="" className="size-10 rounded-xl bg-[color:var(--signal-sky-bg)] object-cover" />
-            <p><span className="font-semibold text-[color:var(--signal-ink)]">小提示：</span>你不需要一次走完整張地圖，今日行一小步就已經算前進。</p>
+            <p><span className="font-semibold text-[color:var(--signal-ink)]">{t('home.tip')}</span>{t('home.tipBody')}</p>
           </div>
         </section>
       </main>
@@ -379,8 +366,8 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
   const conversationBeats = [
     {
       id: 'context',
-      speaker: '你',
-      role: '先看到情境',
+      speaker: t('game.conversationBeats.youSpeaker'),
+      role: t('game.conversationBeats.youRole'),
       text: session.Scenario.SceneContext,
       imagePath: playerAvatarPath,
       tone: 'player',
@@ -395,8 +382,8 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
     },
     {
       id: 'clue',
-      speaker: '場景提示',
-      role: '留意下一步',
+      speaker: t('game.conversationBeats.clueSpeaker'),
+      role: t('game.conversationBeats.clueRole'),
       text: session.Scenario.EvidenceItems[2] ?? session.Scenario.EvidenceItems[0] ?? '',
       imagePath: null,
       tone: 'clue',
@@ -409,9 +396,12 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
         <div className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
           <button type="button" className="inline-flex items-center gap-2 text-[color:var(--signal-navy)] transition hover:opacity-75" onClick={returnHome}>
             <ArrowLeft className="size-4" />
-            返回首頁
+            {t('game.returnHome')}
           </button>
-          <span>第 {session.LevelNumber} 關 · {session.Title}</span>
+          <div className="flex items-center gap-3">
+            <span>{t('game.levelLabel', { number: session.LevelNumber, title: session.Title })}</span>
+            <LangSwitcher className="flex items-center gap-1" />
+          </div>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
@@ -438,7 +428,7 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
               </div>
 
               <div className="space-y-3">
-                <h3 className="text-sm font-medium text-[color:var(--signal-navy)]">你目前見到的線索</h3>
+                <h3 className="text-sm font-medium text-[color:var(--signal-navy)]">{t('game.cluesTitle')}</h3>
                 <ul className="space-y-3">
                   {session.Scenario.EvidenceItems.map((item) => (
                     <li key={item} className="rounded-2xl border border-border/70 bg-background/80 px-4 py-3 text-sm leading-6 text-foreground">
@@ -458,8 +448,8 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
                     <div className="flex items-center gap-3 text-[color:var(--signal-navy)]">
                       <span className="flex size-10 items-center justify-center rounded-2xl bg-[color:var(--signal-sky-bg)]"><BookOpenCheck className="size-5" /></span>
                       <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--signal-navy)]/60">新手教學</p>
-                        <p className="text-sm font-medium">出發前先學會三步</p>
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--signal-navy)]/60">{t('tutorial.eyebrow')}</p>
+                        <p className="text-sm font-medium">{t('tutorial.subtitle')}</p>
                       </div>
                     </div>
                     <span className="text-sm font-medium text-muted-foreground">{tutorialStep + 1} / {session.TutorialSteps.length}</span>
@@ -469,17 +459,19 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
                     <div className="tutorial-progress" aria-hidden="true">
                       {session.TutorialSteps.map((step, index) => <span key={step.StepNumber} className={cn(index <= tutorialStep && 'tutorial-progress-active')} />)}
                     </div>
-                    <p className="text-sm font-medium uppercase tracking-[0.16em] text-[color:var(--signal-sky-fg)]">第 {session.TutorialSteps[tutorialStep].StepNumber} 步</p>
+                    <p className="text-sm font-medium uppercase tracking-[0.16em] text-[color:var(--signal-sky-fg)]">
+                      {t('tutorial.stepLabel', { number: session.TutorialSteps[tutorialStep].StepNumber })}
+                    </p>
                     <h3 className="text-2xl font-semibold text-[color:var(--signal-navy)]">{session.TutorialSteps[tutorialStep].Title}</h3>
                     <p className="text-sm leading-7 text-muted-foreground">{session.TutorialSteps[tutorialStep].Body}</p>
                   </div>
 
                   <div className="rounded-2xl border border-[color:var(--signal-sky-border)] bg-[color:var(--signal-sky-bg)]/70 px-4 py-3 text-sm leading-6 text-[color:var(--signal-navy)]">
-                    完成教學後，分類按鈕才會開放。你可以放心慢慢看線索。
+                    {t('tutorial.hint')}
                   </div>
 
                   <Button className="w-full bg-[color:var(--signal-navy)] text-white hover:bg-[color:var(--signal-navy)]/90" onClick={advanceTutorial}>
-                    {tutorialStep === session.TutorialSteps.length - 1 ? '開始第一關' : '下一步'} <ChevronRight className="size-4" />
+                    {tutorialStep === session.TutorialSteps.length - 1 ? t('tutorial.startLevel') : t('tutorial.nextStep')} <ChevronRight className="size-4" />
                   </Button>
                 </CardContent>
               </Card>
@@ -489,11 +481,11 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
               <Card className="border-white/60 bg-card/95 shadow-[0_20px_60px_rgba(34,42,74,0.08)]">
                 <CardContent className="space-y-5 p-6">
                   <div className="space-y-2">
-                    <h3 className="text-xl font-semibold text-[color:var(--signal-navy)]">{phase === 'classify' ? '先選擇一個訊號分類' : classification?.RevealTitle}</h3>
+                    <h3 className="text-xl font-semibold text-[color:var(--signal-navy)]">
+                      {phase === 'classify' ? t('classify.title') : classification?.RevealTitle}
+                    </h3>
                     <p className="text-sm leading-6 text-muted-foreground">
-                      {phase === 'classify'
-                        ? '答案現在未公開。請按目前證據，選擇最能代表下一步要怎樣做的分類。'
-                        : classification?.RevealCoaching}
+                      {phase === 'classify' ? t('classify.subtitle') : classification?.RevealCoaching}
                     </p>
                   </div>
 
@@ -520,7 +512,7 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
                               <span className="font-semibold">{signal.Label}</span>
-                              {isCorrect && <span className="rounded-full bg-white/70 px-2 py-0.5 text-xs font-medium">最佳答案</span>}
+                              {isCorrect && <span className="rounded-full bg-white/70 px-2 py-0.5 text-xs font-medium">{t('classify.bestAnswer')}</span>}
                             </div>
                             <p className="text-sm leading-6 opacity-85">{signal.Description}</p>
                           </div>
@@ -534,12 +526,12 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
                       <div className="flex items-start gap-3">
                         <CheckCircle2 className="mt-0.5 size-5" />
                         <div className="space-y-2">
-                          <p className="font-medium">今次最佳分類是「{correctSignalOption.Label}」</p>
+                          <p className="font-medium">{t('classify.bestClassLabel', { label: correctSignalOption.Label })}</p>
                           <p className="text-sm leading-6">{classification.FollowUpPrompt}</p>
                         </div>
                       </div>
                       <Button className="bg-[color:var(--signal-navy)] text-white hover:bg-[color:var(--signal-navy)]/90" onClick={goToResponses}>
-                        繼續選擇回應
+                        {t('classify.continueToRespond')}
                       </Button>
                     </div>
                   )}
@@ -551,8 +543,8 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
               <Card className="border-white/60 bg-card/95 shadow-[0_20px_60px_rgba(34,42,74,0.08)]">
                 <CardContent className="space-y-5 p-6">
                   <div className="space-y-2">
-                    <h3 className="text-xl font-semibold text-[color:var(--signal-navy)]">選擇一個回應</h3>
-                    <p className="text-sm leading-6 text-muted-foreground">情境已經顯示最佳分類。現在請選擇一個你會講出口的回應。</p>
+                    <h3 className="text-xl font-semibold text-[color:var(--signal-navy)]">{t('respond.title')}</h3>
+                    <p className="text-sm leading-6 text-muted-foreground">{t('respond.subtitle')}</p>
                   </div>
 
                   <div className="grid gap-3">
@@ -591,12 +583,12 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
                   </div>
 
                   <div className="rounded-2xl border border-border bg-background px-4 py-4 text-sm leading-6 text-foreground">
-                    <p className="font-medium text-[color:var(--signal-navy)]">你選擇了：</p>
+                    <p className="font-medium text-[color:var(--signal-navy)]">{t('feedback.youChose')}</p>
                     <p className="mt-2">{responseResult.ResponseText}</p>
                   </div>
 
                   <Button className="bg-[color:var(--signal-navy)] text-white hover:bg-[color:var(--signal-navy)]/90" onClick={goToSummary}>
-                    查看總結
+                    {t('feedback.viewSummary')}
                   </Button>
                 </CardContent>
               </Card>
@@ -606,7 +598,7 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
               <Card className="border-white/60 bg-card/95 shadow-[0_20px_60px_rgba(34,42,74,0.08)]">
                 <CardContent className="space-y-5 p-6">
                   <div className="space-y-2">
-                    <p className="text-sm font-medium text-[color:var(--signal-navy)]/70">完成</p>
+                    <p className="text-sm font-medium text-[color:var(--signal-navy)]/70">{t('summary.eyebrow')}</p>
                     <h3 className="text-xl font-semibold text-[color:var(--signal-navy)]">{session.EndPromptTitle}</h3>
                     <p className="text-sm leading-6 text-muted-foreground">{session.EndPromptText}</p>
                   </div>
@@ -615,7 +607,9 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
                     <div className="flex items-start gap-3">
                       <span className="summary-result-icon">{summary.IsTransferSuccessful ? <Trophy className="size-5" /> : <RotateCcw className="size-5" />}</span>
                       <div className="space-y-1">
-                        <p className="text-xs font-semibold uppercase tracking-[0.14em]">{summary.IsClassificationCorrect ? '訊號分析' : '再看一次證據'}</p>
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em]">
+                          {summary.IsClassificationCorrect ? t('summary.classificationCorrect') : t('summary.classificationWrong')}
+                        </p>
                         <h4 className="text-lg font-semibold">{summary.TransferTitle}</h4>
                       </div>
                     </div>
@@ -623,22 +617,24 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
                   </div>
 
                   <div className="summary-analysis grid gap-3 sm:grid-cols-2">
-                    <div><span>你的分類</span><strong>{summary.SelectedSignalLabel}</strong></div>
-                    <div><span>最佳分類</span><strong>{summary.CorrectSignalLabel}</strong></div>
-                    <div className="sm:col-span-2"><span>你的回應</span><strong>{summary.ResponseLabel}</strong></div>
+                    <div><span>{t('summary.yourClassification')}</span><strong>{summary.SelectedSignalLabel}</strong></div>
+                    <div><span>{t('summary.bestClassification')}</span><strong>{summary.CorrectSignalLabel}</strong></div>
+                    <div className="sm:col-span-2"><span>{t('summary.yourResponse')}</span><strong>{summary.ResponseLabel}</strong></div>
                   </div>
 
                   <div className="rounded-2xl border border-[color:var(--signal-map-border)] bg-white/60 px-4 py-3 text-sm leading-6 text-[color:var(--signal-ink-soft)]">
-                    <p className="font-semibold text-[color:var(--signal-ink)]">轉移成功規則</p>
+                    <p className="font-semibold text-[color:var(--signal-ink)]">{t('summary.transferRule')}</p>
                     <p className="mt-1">{summary.TransferRule}</p>
                   </div>
 
                   <div className="flex flex-wrap gap-3">
                     <Button className="bg-[color:var(--signal-navy)] text-white hover:bg-[color:var(--signal-navy)]/90" onClick={restartSession}>
-                      <RotateCcw className="size-4" /> 再玩一次
+                      <RotateCcw className="size-4" /> {t('summary.playAgain')}
                     </Button>
                     <Button variant="outline" className="border-[color:var(--signal-sky-border)] bg-white/70 text-[color:var(--signal-navy)] hover:bg-[color:var(--signal-sky-bg)]" onClick={continueFromSummary}>
-                      {summary.IsTransferSuccessful && mode === SignalShiftEntryMode.Learning && adventureLevels[adventureLevels.findIndex((level) => level.id === activeLevelId) + 1] ? '前往下一關' : session.ContinueLabel}
+                      {summary.IsTransferSuccessful && mode === SignalShiftEntryMode.Learning && adventureLevels[adventureLevels.findIndex((level) => level.id === activeLevelId) + 1]
+                        ? t('summary.nextLevel')
+                        : session.ContinueLabel}
                     </Button>
                   </div>
                 </CardContent>
@@ -649,7 +645,7 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
               <Card className="border-white/60 bg-card/95">
                 <CardContent className="flex items-center gap-3 p-4 text-sm text-muted-foreground">
                   <div className="size-5 animate-spin rounded-full border-2 border-muted border-t-[color:var(--signal-navy)]" />
-                  載入中…
+                  {t('loading')}
                 </CardContent>
               </Card>
             )}
@@ -659,7 +655,7 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
                 <CardContent className="space-y-3 p-4">
                   <p className="text-sm leading-6">{error}</p>
                   <Button variant="outline" className="border-current bg-transparent text-current hover:bg-white/40" onClick={returnHome}>
-                    返回首頁
+                    {t('game.returnHome')}
                   </Button>
                 </CardContent>
               </Card>
@@ -671,14 +667,22 @@ const SignalShiftView = ({ onReturnHome }: SignalShiftViewProps) => {
   );
 };
 
-const AdventureLevelNode = ({ level, onSelect }: { level: AdventureLevel; onSelect: () => void }) => {
+const AdventureLevelNode = ({ level, onSelect }: { level: AdventureLevel & { unlocked: boolean }; onSelect: () => void }) => {
+  const { t } = useTranslation();
+  const levelKey = level.id as keyof ReturnType<typeof t>;
+  const title = t(`levels.${level.id}.title`);
+  const subtitle = t(`levels.${level.id}.subtitle`);
+  const description = t(`levels.${level.id}.description`);
+
   return (
     <button
       type="button"
       className={cn('adventure-level-node', `adventure-level-node-${level.accent}`, !level.unlocked && 'adventure-level-node-locked')}
       onClick={onSelect}
       disabled={!level.unlocked}
-      aria-label={level.unlocked ? `開始第 ${level.number} 關：${level.title}` : `${level.title} 尚未解鎖`}
+      aria-label={level.unlocked
+        ? t('aria.startLevel', { number: level.number, title })
+        : t('aria.lockedLevel', { title })}
     >
       <span className="adventure-level-node-shadow" aria-hidden="true" />
       <span className="adventure-level-node-face">
@@ -686,15 +690,16 @@ const AdventureLevelNode = ({ level, onSelect }: { level: AdventureLevel; onSele
         {level.unlocked ? <Compass className="adventure-level-icon" /> : <LockKeyhole className="adventure-level-icon" />}
       </span>
       <span className="adventure-level-copy">
-        <strong>{level.title}</strong>
-        <span>{level.subtitle}</span>
-        <small>{level.description}</small>
+        <strong>{title}</strong>
+        <span>{subtitle}</span>
+        <small>{description}</small>
       </span>
     </button>
   );
 };
 
 const LoadingState = ({ error, onReturnHome }: { error: string | null; onReturnHome: () => void }) => {
+  const { t } = useTranslation();
   return (
     <main className="signal-shift-shell flex min-h-screen items-center justify-center px-6 py-10">
       <Card className="w-full max-w-md border-white/60 bg-card/95">
@@ -702,12 +707,12 @@ const LoadingState = ({ error, onReturnHome }: { error: string | null; onReturnH
           {error ? (
             <>
               <p className="text-sm leading-6 text-[color:var(--signal-coral-fg)]">{error}</p>
-              <Button onClick={onReturnHome}>返回首頁</Button>
+              <Button onClick={onReturnHome}>{t('game.returnHome')}</Button>
             </>
           ) : (
             <>
               <div className="mx-auto size-8 animate-spin rounded-full border-2 border-muted border-t-[color:var(--signal-navy)]" />
-              <p className="text-sm text-muted-foreground">載入中…</p>
+              <p className="text-sm text-muted-foreground">{t('loading')}</p>
             </>
           )}
         </CardContent>
@@ -734,21 +739,22 @@ type ConversationBeat = {
 };
 
 const ConversationFlow = ({ beats }: { beats: readonly ConversationBeat[] }) => {
+  const { t } = useTranslation();
   return (
     <div className="conversation-flow">
       <div className="conversation-flow-heading">
         <div>
-          <p className="conversation-flow-kicker">CURRENT FLOW</p>
-          <p className="mt-1 text-sm font-semibold text-[color:var(--signal-navy)]">對話正在一層層靠近你的判斷</p>
+          <p className="conversation-flow-kicker">{t('game.flow.kicker')}</p>
+          <p className="mt-1 text-sm font-semibold text-[color:var(--signal-navy)]">{t('game.flow.subtitle')}</p>
         </div>
         <div className="conversation-flow-steps" aria-hidden="true">
-          <span>01 看見</span>
-          <span>02 聽見</span>
-          <span>03 留意</span>
+          <span>{t('game.flow.step1')}</span>
+          <span>{t('game.flow.step2')}</span>
+          <span>{t('game.flow.step3')}</span>
         </div>
       </div>
 
-      <div className="conversation-stage" role="log" aria-live="polite" aria-label="情境對話流程">
+      <div className="conversation-stage" role="log" aria-live="polite" aria-label={t('game.flow.ariaLabel')}>
         <div className="conversation-stage-halo" aria-hidden="true" />
         <div className="conversation-stage-path" aria-hidden="true" />
         <div className="conversation-beats">
@@ -774,7 +780,7 @@ const ConversationFlow = ({ beats }: { beats: readonly ConversationBeat[] }) => 
             </article>
           ))}
         </div>
-        <div className="conversation-stage-status"><span className="conversation-stage-status-dot" /> 等你選擇訊號，將這段流動變成下一步</div>
+        <div className="conversation-stage-status"><span className="conversation-stage-status-dot" /> {t('game.flow.statusWaiting')}</div>
       </div>
     </div>
   );

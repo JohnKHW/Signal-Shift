@@ -1,0 +1,130 @@
+{
+  "brand": "Signal Shift",
+  "topbar": {
+    "title": "職場訊號探險",
+    "progressLabel": "學習進度",
+    "methods": "1 個方法",
+    "levelsCompleted": "{{count}} 關完成"
+  },
+  "home": {
+    "season": "你的學習世界 · 第 1 季",
+    "headline": "沿住訊號小徑，",
+    "headlineSub": "自由選擇下一站。",
+    "copy": "每一關都是一個短短的職場場景。你可以從已開放的路線開始，完成後再解鎖更遠的地方。",
+    "startLearning": "開始學習",
+    "tryDemo": "直接試玩 Demo",
+    "worldMap": "你的世界地圖",
+    "exploreSection": "探索路線",
+    "exploreTitle": "由第一個訊號開始",
+    "exploreDesc": "每一個節點都會練習同一套核心方法：分類 → 確認 → 回應。",
+    "mapCaption": "完成上一關，下一關就會亮起",
+    "tip": "小提示：",
+    "tipBody": "你不需要一次走完整張地圖，今日行一小步就已經算前進。"
+  },
+  "levels": {
+    "signal-detour": {
+      "title": "改道小徑",
+      "subtitle": "計劃突然改變",
+      "description": "學識先看證據，再確認新方向。"
+    },
+    "clear-the-air": {
+      "title": "澄清碼頭",
+      "subtitle": "把意思問清楚",
+      "description": "用一個好問題，為對話留出空間。"
+    },
+    "steady-ground": {
+      "title": "穩陣高地",
+      "subtitle": "保持界線與合作",
+      "description": "把方法帶到更複雜的工作場景。"
+    }
+  },
+  "game": {
+    "returnHome": "返回首頁",
+    "levelLabel": "第 {{number}} 關 · {{title}}",
+    "cluesTitle": "你目前見到的線索",
+    "conversationBeats": {
+      "youSpeaker": "你",
+      "youRole": "先看到情境",
+      "clueSpeaker": "場景提示",
+      "clueRole": "留意下一步"
+    },
+    "flow": {
+      "kicker": "CURRENT FLOW",
+      "subtitle": "對話正在一層層靠近你的判斷",
+      "step1": "01 看見",
+      "step2": "02 聽見",
+      "step3": "03 留意",
+      "ariaLabel": "情境對話流程",
+      "statusWaiting": "等你選擇訊號，將這段流動變成下一步"
+    }
+  },
+  "tutorial": {
+    "eyebrow": "新手教學",
+    "subtitle": "出發前先學會三步",
+    "stepLabel": "第 {{number}} 步",
+    "hint": "完成教學後，分類按鈕才會開放。你可以放心慢慢看線索。",
+    "nextStep": "下一步",
+    "startLevel": "開始第一關"
+  },
+  "classify": {
+    "title": "先選擇一個訊號分類",
+    "subtitle": "答案現在未公開。請按目前證據，選擇最能代表下一步要怎樣做的分類。",
+    "bestAnswer": "最佳答案",
+    "bestClassLabel": "今次最佳分類是「{{label}}」",
+    "continueToRespond": "繼續選擇回應"
+  },
+  "respond": {
+    "title": "選擇一個回應",
+    "subtitle": "情境已經顯示最佳分類。現在請選擇一個你會講出口的回應。"
+  },
+  "feedback": {
+    "youChose": "你選擇了：",
+    "viewSummary": "查看總結"
+  },
+  "summary": {
+    "eyebrow": "完成",
+    "classificationCorrect": "訊號分析",
+    "classificationWrong": "再看一次證據",
+    "yourClassification": "你的分類",
+    "bestClassification": "最佳分類",
+    "yourResponse": "你的回應",
+    "transferRule": "轉移成功規則",
+    "playAgain": "再玩一次",
+    "nextLevel": "前往下一關"
+  },
+  "loading": "載入中…",
+  "errors": {
+    "loadSession": "未能載入情境，請再試一次。",
+    "evaluate": "未能評估分類，請再試一次。",
+    "loadResponse": "未能載入回應結果，請再試一次。",
+    "loadSummary": "未能載入總結，請再試一次。"
+  },
+  "aria": {
+    "startLevel": "開始第 {{number}} 關：{{title}}",
+    "lockedLevel": "{{title}} 尚未解鎖"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "找不到頁面",
+    "body": "你所請求的頁面不存在或已不再提供。",
+    "returnHome": "返回首頁"
+  },
+  "unauthorized": {
+    "title": "無權限",
+    "body": "你沒有權限存取此頁面。",
+    "goHome": "返回首頁"
+  },
+  "auth": {
+    "sessionTimeout": "回復登入逾時，請檢查網絡連線後再試。",
+    "sessionFailed": "未能回復你的登入狀態。",
+    "retry": "重試",
+    "signOut": "登出",
+    "loading": "載入中…"
+  },
+  "errorBoundary": {
+    "title": "{{name}} - 出現問題"
+  },
+  "langSwitcher": {
+    "label": "語言"
+  }
+}

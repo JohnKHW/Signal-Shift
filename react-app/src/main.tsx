@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom/client';
 import MainApp from './App';
 import './default.css';
+import './i18n';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   // <React.StrictMode>

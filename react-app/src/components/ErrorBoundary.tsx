@@ -5,6 +5,7 @@
  * Useful for segmenting riskier or integration-heavy UI subtrees, supports developer hinting via details.
  */
 import { Component, ErrorInfo, ReactNode } from 'react';
+import i18n from '@/i18n';
 
 interface Props {
   children: ReactNode;
@@ -48,7 +49,7 @@ class ErrorBoundary extends Component<Props, State> {
       // Error UI rendering
       return (
         <div>
-          <h2>{this.props.name} - Something went wrong</h2>
+          <h2>{i18n.t('errorBoundary.title', { name: this.props.name })}</h2>
           <details style={{ whiteSpace: 'pre-wrap' }}>
             {this.state?.error?.toString()}
             <br />
