@@ -133,7 +133,9 @@ namespace App.Api
                         {
                             if (origin is null) return false;
                             var host = new Uri(origin).Host;
-                            return host == "localhost" || host == "127.0.0.1";
+                            return host == "localhost"
+                                || host == "127.0.0.1"
+                                || host.EndsWith(".myide.io");   // CloudStudio preview deployments
                         })
                         .AllowAnyHeader()
                         .AllowAnyMethod()
